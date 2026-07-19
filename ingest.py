@@ -59,5 +59,5 @@ def build_vector_database(file_path):
     return retriever
 
 if __name__ == "__main__":
-    pdf_path = "C:/Users/tsree/Desktop/article.pdf"
+    pdf_path = "C:/Users/tsree/Desktop/article 2.pdf"
     retriever = build_vector_database(pdf_path)
