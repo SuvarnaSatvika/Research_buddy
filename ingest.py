@@ -1,3 +1,5 @@
+import os
+
 import fitz
 import re
 from langchain_classic.retrievers import ParentDocumentRetriever
@@ -59,5 +61,11 @@ def build_vector_database(file_path):
     return retriever
 
 if __name__ == "__main__":
-    pdf_path = "C:/Users/tsree/Desktop/article 2.pdf"
-    retriever = build_vector_database(pdf_path)
+    folder_path = "./data"
+
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".pdf"):
+            file_path = os.path.join(folder_path, filename)
+
+            build_vector_database(file_path)
+    print ("Database updated")

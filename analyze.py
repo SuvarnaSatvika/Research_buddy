@@ -2,11 +2,11 @@ from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_core.prompts import PromptTemplate
 
-def compare_papers(topic, paper1_title, paper2_title):
+def compare_papers(topic, paper_titles_list):
     """
         Makes the LLM compare two papers side-by-side using metadata filter
     """
-    print (f"Comparing both papers on {topic}")
+    print (f"Comparing papers on {topic}")
 
     # Initialize embedding model and database
     embeddings = OllamaEmbeddings(model = "nomic-embed-text")
@@ -16,25 +16,22 @@ def compare_papers(topic, paper1_title, paper2_title):
         persist_directory = "./chroma_db" 
     )
 
-    # Retrieve chunks from both papers using metadata filtering
-    docs1 = vectorstore.similarity_search(query = topic, k = 3, filter = {"title":paper1_title})
-    context1 = "\n\n".join([d.page_content for d in docs1])
-
-    docs2 = vectorstore.similarity_search(query = topic, k = 3, filter = {"title":paper2_title})
-    context2 = "\n\n".join([d.page_content for d in docs2])
-
+    combined_context = ""
+    for title in paper_titles_list:
+        docs = vectorstore.similarity_search(query = topic, k = 2, filter = {"title": title})
+        combined_context += f"\n Paper: {title} \n"
+        combined_context += "\n".join([d.page_content for d in docs]) + "\n"
     # Defining template
     prompt = PromptTemplate.from_template("""
     You are an expert research assistant. Analyze the differences
-    between the given two papers regarding the following topic : {topic}
+    between the given papers regarding the following topic : {topic}
     
-    Paper 1 - {paper1_title} Context : {context1}
-    
-    Paper 2 = {paper2_title} Context : {context2}
+    Research contexts:
+    {contexts}                                          
                                           
     Output a detailed contrastive analysis highlighting their 
     methodological differences. You must use a Markdown table to
-    compare them side-by-side. Keep it concise and academic.                                                                                  
+    compare them side-by-side.                                                                                
 """)
     # Initialize the local model
     llm = ChatOllama(model = "llama3.2")
@@ -43,10 +40,7 @@ def compare_papers(topic, paper1_title, paper2_title):
     chain = prompt | llm
     response = chain.invoke({
         "topic" : topic,
-        "paper1_title" : paper1_title,
-        "paper2_title" : paper2_title,
-        "context1" : context1,
-        "context2" : context2
+        "contexts" : combined_context
     })
 
     return response.content
