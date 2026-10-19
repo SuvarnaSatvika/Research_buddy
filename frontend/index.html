@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Copilot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Research Copilot</h1>
+        
+        <!-- Multi-PDF Upload Section -->
+        <div class="upload-box">
+            <h3>Upload New Papers</h3>
+            <p class="sub-text">Select one or more PDFs to ingest into your database.</p>
+            <input type="file" id="fileInput" accept=".pdf" multiple>
+            <button onclick="uploadPaper()">Upload & Ingest</button>
+            <div id="uploadStatus" class="status-message"></div>
+        </div>
+
+        <hr>
+        
+        <!-- Target Paper Filter & Search Section -->
+        <!-- Feature Control Panel -->
+        <div class="control-panel" style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">🛠️ Analysis Settings</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="numPapers">How many papers do you want to analyze?</label>
+                <input type="number" id="numPapers" min="1" max="5" value="1" style="width: 50px; padding: 5px;" onchange="generateDropdowns()">
+            </div>
+
+            <!-- Dynamic Dropdowns will spawn inside this div -->
+            <div id="dynamicDropdowns" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <!-- Default first dropdown -->
+                <select class="paper-select dropdown-select">
+                    <option value="ALL">All Ingested Papers</option>
+                </select>
+            </div>
+
+            <div class="search-box" style="margin-bottom: 15px;">
+                <input type="text" id="queryInput" placeholder="Enter your research topic, question, or context...">
+            </div>
+
+            <!-- The AI Feature Buttons -->
+            <div class="action-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="runFeature('ask')" style="background-color: #2ecc71;">Standard Q&A</button>
+                <button onclick="runFeature('compare')" style="background-color: #f39c12;">Compare Papers</button>
+                <button onclick="runFeature('timeline')" style="background-color: #9b59b6;">Timeline Tracker</button>
+                <button onclick="runFeature('deep-dive')" style="background-color: #34495e;">Deep Dive</button>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading">Searching database and generating response...</div>
+        
+        <div id="responseBox" class="response-area">
+            Your results will appear here.
+        </div>
+
+        <hr>
+
+        <!-- Browser Local Storage History Section -->
+        <div class="history-section">
+            <div class="history-header">
+                <h3>Research History</h3>
+                <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+            </div>
+            <div id="historyContainer" class="history-container">
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
